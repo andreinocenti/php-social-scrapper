@@ -1,0 +1,16 @@
+volumes:
+  app_files:
+      driver: local
+      driver_opts:
+          type: none
+          o: bind
+          device: "./"
+
+services:
+  php:
+    container_name: php-social-scrapper
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - app_files:/var/www/html
