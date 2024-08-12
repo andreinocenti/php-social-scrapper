@@ -1,0 +1,34 @@
+{
+    "name": "andreinocenti/php-social-scrapper",
+    "description": "A package that scrap social media content",
+    "type": "library",
+    "require": {
+        "php": "^8",
+        "symfony/panther": "^2.1"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "AndreInocenti\\PhpSocialScrapper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AndreInocenti\\PhpSocialScrapper\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Andre Inocenti",
+            "email": "andreinocenti@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "pestphp/pest": "^2.35"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
