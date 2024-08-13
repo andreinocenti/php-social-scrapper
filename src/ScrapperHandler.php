@@ -46,12 +46,19 @@ class ScrapperHandler
 
     public function __construct(string $url)
     {
-        $client = ShutdownListerner::createClient();
-        ShutdownListerner::close($client);
-        $client = ShutdownListerner::createClient();
-        $this->crawler = $client->request('GET', $url);
-        $this->client = $client;
+        $this->client = ShutdownListerner::createClient();
+        $this->crawler = $this->client->request('GET', $url);
         $this->url = $url;
+    }
+
+    public function close()
+    {
+        try {
+            $this->client->close();
+            $this->client->quit();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     public function getClient()
@@ -84,12 +91,14 @@ class ScrapperHandler
 
     function onEnd($result)
     {
+        $this->close();
         return $result;
     }
 
 
     function onError(\Exception $error)
     {
+        $this->close();
         return $error->getMessage();
     }
 
@@ -102,6 +111,8 @@ class ScrapperHandler
                 usleep($tryCount * 500000);
                 return $this->tryLoop($action, $args, $tryCount - 1);
             }
+
+            $this->close();
             throw $e;
         }
     }
