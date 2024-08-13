@@ -3,20 +3,14 @@ namespace AndreInocenti\PhpSocialScrapper\Handler;
 
 use AndreInocenti\PhpSocialScrapper\Handler\Helper\DataCrawler;
 use AndreInocenti\PhpSocialScrapper\Handler\Helper\JSON;
+use AndreInocenti\PhpSocialScrapper\Handler\Traits\GetNumberFromText;
 use AndreInocenti\PhpSocialScrapper\ScrapperHandler;
 
 class InstagramHandler extends ScrapperHandler {
+	use GetNumberFromText;
 
 	private function getArticleCrawler(){
 		return $this->client->waitForVisibility('article');
-	}
-
-	private function extractNumber($text, $sufix){
-		$reg = '#\b([\d,.]+)\s+' . $sufix . '\b#';
-		if(preg_match($reg, $text, $matches)){
-			return (int) preg_replace('#[,.]#', '', $matches[1]);
-		}
-		return null;
 	}
 
 	function actionDefault($args = []){
@@ -49,8 +43,8 @@ class InstagramHandler extends ScrapperHandler {
 			'text' => $dataCrawler->query(['meta', 'title']),
 			'images' => $images,
 			'videos' => $videos,
-			'likes' => $this->extractNumber($description, 'likes'),
-			'comments' => $this->extractNumber($description, 'comments'),
+			'likes' => $this->getNumberFromText('likes', $description),
+			'comments' => $this->getNumberFromText('comments', $description),
 		];
 	}
 
