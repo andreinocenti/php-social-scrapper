@@ -6,6 +6,7 @@ use AndreInocenti\PhpSocialScrapper\Handler\InstagramHandler;
 use AndreInocenti\PhpSocialScrapper\Handler\LinkedinHandler;
 use AndreInocenti\PhpSocialScrapper\Handler\TikTokHandler;
 use AndreInocenti\PhpSocialScrapper\Handler\TwitterHandler;
+use AndreInocenti\PhpSocialScrapper\Handler\TwitterProfileHandler;
 use AndreInocenti\PhpSocialScrapper\Router\Router;
 
 return new Router([
@@ -20,4 +21,5 @@ return new Router([
 	'tiktok.com/@([^/]+)/video/(\d+)' => [TikTokHandler::class, 'video'],
 	'twitter.com/([^/]+)/status/(\d+)' => [TwitterHandler::class, 'status'],
 	'x.com/([^/]+)/status/(\d+)' => [TwitterHandler::class, 'status'],
+	'x.com/([^/]+)$' => [TwitterProfileHandler::class, 'profile'],
 ]);
