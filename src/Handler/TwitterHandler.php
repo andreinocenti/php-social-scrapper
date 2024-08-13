@@ -1,11 +1,12 @@
 <?php
 namespace AndreInocenti\PhpSocialScrapper\Handler;
 
+use AndreInocenti\PhpSocialScrapper\Handler\Traits\GetNumberFromText;
 use AndreInocenti\PhpSocialScrapper\Handler\Traits\TwitterTrait;
 use AndreInocenti\PhpSocialScrapper\ScrapperHandler;
 
 class TwitterHandler extends ScrapperHandler {
-	use TwitterTrait;
+	use TwitterTrait, GetNumberFromText;
 
 	private $articleNode;
 	private $articleCrawler;
