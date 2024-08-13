@@ -20,8 +20,9 @@ composer require andreinocenti/php-social-scrapper
 
 ## Usage
 ```php
+use AndreInocenti\PhpSocialScrapper\SocialScrapper;
 
-$scrapper = new PhpSocialScrapper();
+$scrapper = new SocialScrapper();
 $scrappedData = $scrapper->fetch('https://www.instagram.com/p/CT9J9Z9r1Zz/');
 
 ```

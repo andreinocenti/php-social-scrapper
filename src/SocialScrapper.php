@@ -46,7 +46,7 @@ class SocialScrapper {
 		return $result;
 	}
 
-	function request($url){
+	function fetch($url){
 		$route = $this->getRouter()->match($url);
 		if(!$route) throw new \Exception('Request $url: "'.$url.'" not supported');
 		$args = $route['matches'];
