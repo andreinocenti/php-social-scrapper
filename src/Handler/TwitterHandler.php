@@ -2,6 +2,7 @@
 namespace AndreInocenti\PhpSocialScrapper\Handler;
 
 use AndreInocenti\PhpSocialScrapper\ScrapperHandler;
+use Symfony\Component\Panther\Client;
 
 class TwitterHandler extends ScrapperHandler {
 
@@ -76,21 +77,24 @@ class TwitterHandler extends ScrapperHandler {
 	}
 
 	function getImages(){
-		return $this
-		->getTestIdNode('card.layoutLarge.media')
-		->filter('img')
-		->each(function($node){
-			return $node->attr('src');
-		});
+		return $this->getArticleNode()
+			->filterXPath('//img[contains(@src, "media")]')
+			->each(fn ($node) => $node->attr('src'));
 	}
 
-	function getVideos(){
-		return $this
-		->getTestIdNode('videoComponent')
-		->filter('video')
-		->each(function($node){
-			return $node->attr('src');
-		});
+	function getVideos(): array{
+		$videosNodes = $this->getArticleNode()
+			->filterXPath('//video//source');
+		if(!$videosNodes->count()) return [];
+
+		$apiUrl = "https://twitsave.com/info?url={$this->url}";
+		$crawler = $this->client->request('GET', $apiUrl);
+		$url = $crawler->filter('div.origin-top-right')
+			->first()
+			->filter('a')
+			->first()
+			->getAttribute('href');
+		return $url ? [$url] : [];
 	}
 
 	function actionDefault(){
