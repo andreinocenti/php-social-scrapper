@@ -1,10 +1,11 @@
 <?php
 namespace AndreInocenti\PhpSocialScrapper\Handler;
 
+use AndreInocenti\PhpSocialScrapper\Handler\Traits\TwitterTrait;
 use AndreInocenti\PhpSocialScrapper\ScrapperHandler;
-use Symfony\Component\Panther\Client;
 
 class TwitterHandler extends ScrapperHandler {
+	use TwitterTrait;
 
 	private $articleNode;
 	private $articleCrawler;
@@ -27,59 +28,42 @@ class TwitterHandler extends ScrapperHandler {
 		return $this->articleEnd;
 	}
 
-	function getTestIdNode($id){
-		return $this->getArticleCrawler()->filter('[data-testid="'.$id.'"]')->first();
-	}
-
-	function getNumberFromLabel($id){
-		$label = $this->getTestIdNode($id)->attr('aria-label');
-		$label = preg_replace('#\D#', '', $label);
-		return $label ? (int)$label : null;
-	}
-
-	function getNumberFromText($sufix){
-		if(preg_match('#([\d,]+)\s+'.$sufix.'#', $this->getArticleEnd(), $matches)){
-			return (int) preg_replace('#,#', '', $matches[1]);
-		}
-		if(preg_match('#([\d\.]+)([MK])\s+'.$sufix.'#', $this->getArticleEnd(), $matches)){
-			$value = (int) preg_replace('#,#', '', $matches[1]);
-			switch($matches[2]){
-				case 'M': return $value * 1000000;
-				case 'K': return $value * 1000;
-			}
-			return $value;
-		}
-		return null;
-	}
-
 	function getViewCount(){
-		return $this->getNumberFromText('Views') ?: $this->getNumberFromText('View');
+		return $this->getNumberFromText('Views', $this->getArticleEnd()) ?: $this->getNumberFromText('View', $this->getArticleEnd());
 	}
 
 	function getShareCount(){
-		return $this->getNumberFromLabel('retweet') ?: $this->getNumberFromText('Reposts') ?: $this->getNumberFromText('Repost');
+		return $this->getNumberFromLabel('retweet', $this->getArticleCrawler())
+			?: $this->getNumberFromText('Reposts', $this->getArticleEnd())
+			?: $this->getNumberFromText('Repost', $this->getArticleEnd());
 	}
 
 	function getCommentCount(){
-		return $this->getNumberFromText('Quotes') ?: $this->getNumberFromText('Quote');
+		return $this->getNumberFromText('Quotes', $this->getArticleEnd()) ?: $this->getNumberFromText('Quote', $this->getArticleEnd());
 	}
 
 	function getReplyCount(){
-		return $this->getNumberFromLabel('reply') ?: $this->getNumberFromText('Replies') ?: $this->getNumberFromText('Reply');
+		return $this->getNumberFromLabel('reply', $this->getArticleCrawler())
+			?: $this->getNumberFromText('Replies', $this->getArticleEnd())
+			?: $this->getNumberFromText('Reply', $this->getArticleEnd());
 	}
 
 	function getLikeCount(){
-		return $this->getNumberFromLabel('like') ?: $this->getNumberFromText('Likes') ?: $this->getNumberFromText('Like');
+		return $this->getNumberFromLabel('like', $this->getArticleCrawler())
+			?: $this->getNumberFromText('Likes', $this->getArticleEnd())
+			?: $this->getNumberFromText('Like', $this->getArticleEnd());
 	}
 
 	function getBookmarkCount(){
-		return $this->getNumberFromLabel('bookmark') ?: $this->getNumberFromText('Bookmarks') ?: $this->getNumberFromText('Bookmark');
+		return $this->getNumberFromLabel('bookmark', $this->getArticleCrawler())
+			?: $this->getNumberFromText('Bookmarks', $this->getArticleEnd())
+			?: $this->getNumberFromText('Bookmark', $this->getArticleEnd());
 	}
 
 	function getImages(){
 		return $this->getArticleNode()
 			->filterXPath('//img[contains(@src, "media")]')
-			->each(fn ($node) => $node->attr('src'));
+			->each(fn ($node) => preg_replace('/([?&])name=[^&]+(&|$)/', '$1', $node->attr('src')));
 	}
 
 	function getVideos(): array{
@@ -104,7 +88,7 @@ class TwitterHandler extends ScrapperHandler {
 			'likes' => $this->getLikeCount(),
 			'replies' => $this->getReplyCount(),
 			'share' => $this->getShareCount(),
-			'text' => $this->getTestIdNode('tweetText')->text(),
+			'text' => $this->getTestIdNode('tweetText', $this->getArticleCrawler())->text(),
 			'views' => $this->getViewCount(),
 			'images' => $this->getImages(),
 			'videos' => $this->getVideos(),
