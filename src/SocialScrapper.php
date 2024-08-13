@@ -14,9 +14,10 @@ class SocialScrapper {
 	}
 
 	private function runCallable($url, $controllerClass, $action, $args){
+		$controllerExploded = explode("\\", basename($controllerClass));
 		$result = [
 			'url' => $url,
-			'controller' => basename($controllerClass),
+			'controller' => end($controllerExploded),
 			'action' => $action,
 		];
 		$controller = null;
@@ -36,8 +37,12 @@ class SocialScrapper {
 			$result['file'] = $e->getFile();
 			$result['line'] = $e->getLine();
 		}
-		$controller->client->close();
-		$controller->client->quit();
+		try {
+			$controller->client->close();
+			$controller->client->quit();
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
 		return $result;
 	}
 
