@@ -31,7 +31,7 @@ $scrappedData = $scrapper->fetch('https://www.instagram.com/p/CT9J9Z9r1Zz/');
 ## Important information
 
 - For twitter videos we use Twitsave API. It is a third-party service so it can be offline or not working properly.
-
+- Videos for TikTok, Instagram, Facebook, and LinkedIn are not supported yet, the package can scrap the text and some engagement data. But the video return as a blob.
 
 
 
