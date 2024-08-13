@@ -27,6 +27,12 @@ $scrappedData = $scrapper->fetch('https://www.instagram.com/p/CT9J9Z9r1Zz/');
 ```
 
 
+## Important information
+
+- For twitter videos we use Twitsave API. It is a third-party service so it can be offline or not working properly.
+
+
+
 
 ## For tests
 ```bash
