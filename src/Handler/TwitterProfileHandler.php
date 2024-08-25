@@ -23,9 +23,8 @@ class TwitterProfileHandler extends ScrapperHandler
 
     function getTimelineNode()
     {
-        return $this->timeline ?: ($this->timeline = $this->client->waitForVisibility('//div[contains(@aria-label, "Timeline:")]'));
+        return $this->timeline ?: ($this->timeline = $this->client->waitFor('//div[contains(@aria-label, "Timeline:")]', 15, 600));
     }
-
 
     function getPostsUrl()
     {

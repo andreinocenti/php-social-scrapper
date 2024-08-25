@@ -25,7 +25,10 @@ class SocialScrapper {
 			$controller = new $controllerClass($url);
 		} catch (\Exception $e) {
 			$result['error'] = $e->getMessage();
-			if($controller) $controller->client->close();
+			if($controller){
+				$controller->client->close();
+				$controller->client->quit();
+			}
 			return $result;
 		}
 		try {
